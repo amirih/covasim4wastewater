@@ -155,11 +155,13 @@ def get_population_data(code='test'):
     except FileNotFoundError:
         print(f"WARNING: Population data file not found for code: {code} on path: {os.path.abspath(f'data/population/{code}.csv')}")
         print("WARNING: Loading default population data instead.")
-        data= {
+        population_data= {
             'region_code': [1, 2, 3, 4],
             'population': [1000000, 500000, 750000, 250000]
         }
-        return pd.DataFrame(data)
+        population_data = pd.DataFrame(population_data)
+        population_data['probability'] = population_data['population'] / population_data['population'].sum()
+        return population_data
     except Exception as e:
         raise RuntimeError(f"An error occurred while loading population data: {e}")
 
