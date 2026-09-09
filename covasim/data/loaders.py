@@ -148,10 +148,9 @@ def get_population_data(code='test'):
         3, 750000
         4, 250000
     """
+    population_data = None
     try:
         population_data = pd.read_csv(f'data/population/{code}.csv')
-        population_data['probability'] = population_data['population'] / population_data['population'].sum()
-        return population_data
     except FileNotFoundError:
         print(f"WARNING: Population data file not found for code: {code} on path: {os.path.abspath(f'data/population/{code}.csv')}")
         print("WARNING: Loading default population data instead.")
@@ -160,10 +159,11 @@ def get_population_data(code='test'):
             'population': [1000000, 500000, 750000, 250000]
         }
         population_data = pd.DataFrame(population_data)
-        population_data['probability'] = population_data['population'] / population_data['population'].sum()
-        return population_data
     except Exception as e:
         raise RuntimeError(f"An error occurred while loading population data: {e}")
+    if population_data is not None:
+        population_data['probability'] = population_data['population'] / population_data['population'].sum()
+    return population_data
 
 def get_age_distribution(location=None):
     '''
