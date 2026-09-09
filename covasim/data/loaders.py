@@ -5,6 +5,7 @@ Load data
 #%% Housekeeping
 import numpy as np
 import pandas as pd
+import os
 import sciris as sc
 from . import country_age_data    as cad
 from . import state_age_data      as sad
@@ -152,7 +153,13 @@ def get_population_data(code='test'):
         population_data['probability'] = population_data['population'] / population_data['population'].sum()
         return population_data
     except FileNotFoundError:
-        raise FileNotFoundError(f"Population data file not found for code: {code}")   
+        print(f"WARNING: Population data file not found for code: {code} on path: {os.path.abspath(f'data/population/{code}.csv')}")
+        print("WARNING: Loading default population data instead.")
+        data= {
+            'region_code': [1, 2, 3, 4],
+            'population': [1000000, 500000, 750000, 250000]
+        }
+        return pd.DataFrame(data)
     except Exception as e:
         raise RuntimeError(f"An error occurred while loading population data: {e}")
 
