@@ -5,11 +5,28 @@ import numpy as np
 from shapely.geometry import Polygon
 from shapely.geometry import Point
 from shapely.prepared import prep
-
+import os
 
 
 def load_sewersheds(filename):
-    df = pd.read_csv(filename)
+    if not os.path.isfile(filename):
+        print(f'Warning: Sewershed file {filename} not found; using default file sewersheds.csv')
+        # sid,polygon
+        # 1,"[[-180,-90],[0,-90],[0,0],[-180,0],[-180,-90]]"
+        # 2,"[[0,-90],[180,-90],[180,0],[0,0],[0,-90]]"
+        # 3,"[[-180,0],[0,0],[0,90],[-180,90],[-180,0]]"
+        # 4,"[[0,0],[180,0],[180,90],[0,90],[0,0]]"
+        df = pd.DataFrame({
+            'sid': [1, 2, 3, 4],
+            'polygon': [
+                '[[-180,-90],[0,-90],[0,0],[-180,0],[-180,-90]]',
+                '[[0,-90],[180,-90],[180,0],[0,0],[0,-90]]',
+                '[[-180,0],[0,0],[0,90],[-180,90],[-180,0]]',
+                '[[0,0],[180,0],[180,90],[0,90],[0,0]]'
+            ]
+        })
+    else:
+        df = pd.read_csv(filename)
     if set(df.columns) != {'sid', 'polygon'}:
         raise ValueError('Sewershed CSV must have exactly the columns sid,polygon')
     polygons = {}
